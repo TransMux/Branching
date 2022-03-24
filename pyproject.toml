@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "brancher"
+name = "branching"
 version = "0.1.0"
 description = "A Framework That Provides Easy To Use Plugin Integration."
 authors = ["InEase <InEase28@gmail.com>"]
