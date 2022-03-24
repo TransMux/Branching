@@ -11,21 +11,29 @@ def Plugin(cls):
     cls.__before_hook__ = before_hook = defaultdict(list)
     cls.__after_hook__ = after_hook = defaultdict(list)
 
-    # Make a new definition
-    def run_with_hook(self, name):
+    # In Get Attribute Process
+    def get_attribute(self, name):
+        target = orig_getattribute(self, name)
 
-        for b in before_hook[name]:
-            b(self)
+        if not callable(target):
+            return target
 
-        result = orig_getattribute(self, name)
+        @wraps(target)
+        def actual_run_time(*args, **kwargs):
+            for b in before_hook[name]:
+                b(*args, **kwargs)
 
-        for a in after_hook[name]:
-            a(self, result)
+            result = target(*args, **kwargs)
 
-        return result
+            for a in after_hook[name]:
+                a(result, *args, **kwargs)
+
+            return result
+
+        return actual_run_time
 
     # Attach to the class and return
-    cls.__getattribute__ = run_with_hook
+    cls.__getattribute__ = get_attribute
 
     return cls
 
@@ -47,6 +55,18 @@ def before(*args, **kwargs):
         for target in args:
             cls = get_class_that_defined_method(target)
             cls.__before_hook__[target.__name__].append(hook)
+
+        return hook
+
+    # returning inner function
+    return inner
+
+
+def after(*args, **kwargs):
+    def inner(hook):
+        for target in args:
+            cls = get_class_that_defined_method(target)
+            cls.__after_hook__[target.__name__].append(hook)
 
         return hook
 
