@@ -1,4 +1,4 @@
-<h2 align="center">Branching</h2>
+<h1 align="center">Branching</h1>
 A Framework That Provides Easy To Use Plugin Integration.
 
 ✅ Any Issue or PR or Suggestions are highly welcomed !
