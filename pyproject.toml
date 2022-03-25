@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "branching"
-version = "0.1.1"
+version = "0.2.0"
 description = "A Framework That Provides Easy To Use Plugin Integration."
 authors = ["InEase <InEase28@gmail.com>"]
 
