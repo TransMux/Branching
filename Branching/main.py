@@ -20,13 +20,27 @@ def Plugin(cls):
 
         @wraps(target)
         def actual_run_time(*args, **kwargs):
-            for b in before_hook[name]:
-                b(*args, **kwargs)
+            # Inspect Target Function to Merge *args into **kwargs
+            # TODO: merge arguments every time will lead to performance lost
+            args_list, _, _, _, _, _, _ = inspect.getfullargspec(target)
+            if args_list[0] == "self":
+                args_list = args_list[1:]
+            for i, arg in enumerate(args):
+                kwargs[args_list[i]] = arg
 
-            result = target(*args, **kwargs)
+            for b in before_hook[name]:
+                if b["pipe"]:
+                    kwargs = b["hook"](**kwargs)
+                else:
+                    b["hook"](**kwargs)
+
+            result = target(**kwargs)
 
             for a in after_hook[name]:
-                a(result, *args, **kwargs)
+                if a["pipe"]:
+                    result = a["hook"](result, **kwargs)
+                else:
+                    a["hook"](result, **kwargs)
 
             return result
 
@@ -50,11 +64,14 @@ def get_class_that_defined_method(meth):
     return None  # not required since None would have been implicitly returned anyway
 
 
-def before(*args, **kwargs):
+def before(*args, pipe=False):
     def inner(hook):
         for target in args:
             cls = get_class_that_defined_method(target)
-            cls.__before_hook__[target.__name__].append(hook)
+            cls.__before_hook__[target.__name__].append({
+                "hook": hook,
+                "pipe": pipe
+            })
 
         return hook
 
@@ -62,11 +79,14 @@ def before(*args, **kwargs):
     return inner
 
 
-def after(*args, **kwargs):
+def after(*args, pipe=False):
     def inner(hook):
         for target in args:
             cls = get_class_that_defined_method(target)
-            cls.__after_hook__[target.__name__].append(hook)
+            cls.__after_hook__[target.__name__].append({
+                "hook": hook,
+                "pipe": pipe
+            })
 
         return hook
 
