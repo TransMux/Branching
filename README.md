@@ -11,8 +11,11 @@ A Framework That Provides Easy To Use Plugin Integration.
 - Add Plugin Architecture by simply decorate it with `@Plugin`.
 - Full Support for `@before` and `@after` hook of any function.
 - Using with little changes to your code.
-- Veryyyyy easy to use.
-- No SideEffect.
+- Veryyyyy easy to use. Only three apis (And they are stable!).
+    - `@Plugin` defines the target hook class.
+    - `@before` define a hook that run before the method.
+    - `@after` define a hook that run after the method.
+- ~~No SideEffect.~~ Using this library, the hooked instance can only be used once. See Warning Section for detail.
 
 ### Installation
 
@@ -66,3 +69,31 @@ Order 5: After Hook
 ```
 
 💡 It works!
+
+## Warning
+
+You can also hook on the instance like `a.get_x` above. The effect is the same by doing so, but there are side effects:
+another instance will also trigger the hooks when getting the attributes.
+
+This is an Unsolved problem and any suggestions are welcomed!
+
+As an example of above:
+```python
+a = Foo(123)
+b = Foo(456)
+
+a.get_x()
+b.get_x()
+```
+this will give:
+
+```text
+Order 1/3: Before Hook  // <- a.get_x()
+Order 2: Foo.x  123
+Order 4: In Plugin Hello 123
+Order 5: After Hook
+Order 1/3: Before Hook // <- b.get_x()
+Order 2: Foo.x  456
+Order 4: In Plugin Hello 456
+Order 5: After Hook
+```
