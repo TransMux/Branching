@@ -11,6 +11,7 @@ A Framework That Provides Easy To Use Plugin Integration.
 - Add Plugin Architecture by simply decorate it with `@Plugin`.
 - Full Support for `@before` and `@after` hook of any function.
 - Using with little changes to your code.
+- Code Auto Complete is On.
 - Veryyyyy easy to use. Only three apis (And they are stable!).
     - `@Plugin` defines the target hook class.
     - `@before` define a hook that run before the method.
