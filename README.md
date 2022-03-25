@@ -1,6 +1,6 @@
 <h1 align="center">Branching</h1>
 
-A Framework That Provides Easy To Use Plugin Integration.
+A Framework That Provides Easy To Use Plugin Integration. [-> doc <-](https://github.com/InEase/Branching/blob/master/docs/apis.md)
 
 
 ✅ Any Issue or PR or Suggestions are highly welcomed !
