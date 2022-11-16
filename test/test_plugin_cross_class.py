@@ -21,6 +21,9 @@ class TestPluginCrossClass(unittest.TestCase):
         self.assertEqual(before(1), {"number": 2})
         before.remove()
         self.assertEqual(self.foo.bar(1), 1)
+        before.mount()
+        self.assertEqual(self.foo.bar(1), 2)
+        before.remove()
 
     def test_after(self):
         @Foo.bar.after
