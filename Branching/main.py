@@ -70,17 +70,3 @@ def Plugin(function=None):
     inner.after = wrapper.after
 
     return inner
-
-
-if __name__ == '__main__':
-    @Plugin
-    def target(number: int):
-        return number
-
-
-    @target.before
-    def before(number: int):
-        return {"number": number + 1}
-
-
-    assert target(1) == 2
