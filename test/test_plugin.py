@@ -12,6 +12,11 @@ call_before()...
 level
 去除插件
 plugin.remove()
+
+target(num, a=2)
+
+target(1,2) *args = [1,2]
+
 """
 
 
@@ -23,7 +28,7 @@ class TestPluginInClass(unittest.TestCase):
 
         @target.before
         def before(number: int):
-            return number + 1
+            return {"number": number + 1}
 
         self.assertEqual(target(1), 2)
 

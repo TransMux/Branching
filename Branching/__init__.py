@@ -1,3 +1,3 @@
-__version__ = "0.2.0"
+from .main import Plugin
 
-from main import Plugin, before, after
+__all__ = ["Plugin"]
