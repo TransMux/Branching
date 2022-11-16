@@ -18,14 +18,7 @@ class Wrapper:
         self.in_class = in_class
 
     def __call__(self, *args, **kwargs):
-        # TODO：按需传参
         var_names = self.function.__code__.co_varnames
-        # if var_names[0] == "self":
-        #     # get function class instance
-        #     if self.in_class:
-        #         args = self.cls, *args
-        #     else:
-        #         raise TypeError("Can't call a class method without a class")
 
         kwargs.update(zip(var_names, args))
 
