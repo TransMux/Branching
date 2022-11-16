@@ -18,6 +18,9 @@ class TestPluginCrossClass(unittest.TestCase):
             return {"number": number + 1}
 
         self.assertEqual(self.foo.bar(1), 2)
+        self.assertEqual(before(1), {"number": 2})
+        before.remove()
+        self.assertEqual(self.foo.bar(1), 1)
 
     def test_after(self):
         @Foo.bar.after
@@ -25,6 +28,7 @@ class TestPluginCrossClass(unittest.TestCase):
             return _result + 1
 
         self.assertEqual(self.foo.bar(1), 2)
+        after.remove()
 
     def test_both(self):
         @Foo.bar.before
@@ -36,6 +40,8 @@ class TestPluginCrossClass(unittest.TestCase):
             return _result + 1
 
         self.assertEqual(self.foo.bar(1), 3)
+        before.remove()
+        after.remove()
 
 
 if __name__ == '__main__':

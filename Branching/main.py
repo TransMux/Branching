@@ -33,13 +33,23 @@ class Wrapper:
 
         return result
 
+    def remove_hook(self, function):
+        if function in self._before:
+            self._before.remove(function)
+        elif function in self._after:
+            self._after.remove(function)
+
     def before(self, function):
         self._before.append(function)
-        return self
+        function.remove = partial(self.remove_hook, function)
+        function.mount = partial(self.before, function)
+        return function
 
     def after(self, function):
         self._after.append(function)
-        return self
+        function.remove = partial(self.remove_hook, function)
+        function.mount = partial(self.after, function)
+        return function
 
 
 def Plugin(function=None):
