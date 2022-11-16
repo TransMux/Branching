@@ -1,15 +1,22 @@
-def plugin(func):
-    def inner(*args, **kwargs):
-        print(args, kwargs)
-        return func(*args, **kwargs)
-
-    return inner
+from Branching import Plugin
 
 
-class Foo:
-    @plugin
-    def bar(self, a):
-        print(a)
+@Plugin
+def target(number: int):
+    return number
 
 
-Foo().bar(a=1)
+@target.before
+def before(number: int):
+    return {"number": number + 1}
+
+
+assert target(1) == 2
+
+before.remove()
+
+assert target(1) == 1
+
+before.mount()
+
+assert target(1) == 2
