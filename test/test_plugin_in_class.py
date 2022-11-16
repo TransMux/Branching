@@ -38,10 +38,25 @@ class TestPluginInClass(unittest.TestCase):
             return number
 
         @target.after
-        def after(result, number: int):
-            return result + 1
+        def after(_result):
+            return _result + 1
 
         self.assertEqual(target(1), 2)
+
+    def test_both(self):
+        @Plugin
+        def target(number: int):
+            return number
+
+        @target.before
+        def before(number: int):
+            return {"number": number + 1}
+
+        @target.after
+        def after(_result):
+            return _result + 1
+
+        self.assertEqual(target(1), 3)
 
 
 if __name__ == '__main__':

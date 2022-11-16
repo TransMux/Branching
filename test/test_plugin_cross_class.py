@@ -14,17 +14,28 @@ class TestPluginCrossClass(unittest.TestCase):
 
     def test_before(self):
         @Foo.bar.before  # 动态挂载，全部生效
-        def before(self, number: int):
+        def before(number: int):
             return {"number": number + 1}
 
         self.assertEqual(self.foo.bar(1), 2)
 
     def test_after(self):
         @Foo.bar.after
-        def after(result, self, number: int):
-            return result + 1
+        def after(_result):
+            return _result + 1
 
         self.assertEqual(self.foo.bar(1), 2)
+
+    def test_both(self):
+        @Foo.bar.before
+        def before(number: int):
+            return {"number": number + 1}
+
+        @Foo.bar.after
+        def after(_result):
+            return _result + 1
+
+        self.assertEqual(self.foo.bar(1), 3)
 
 
 if __name__ == '__main__':

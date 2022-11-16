@@ -1,4 +1,13 @@
-from functools import partial
+from functools import partial, wraps
+from typing import Callable
+
+
+def call_function(target: Callable, arguments: dict, result=None):
+    # only pass the needed arguments to the function
+    arguments = {key: value for key, value in arguments.items() if key in target.__code__.co_varnames}
+    if result is not None and "_result" in target.__code__.co_varnames:
+        arguments["_result"] = result
+    return target(**arguments)
 
 
 class Wrapper:
@@ -9,6 +18,7 @@ class Wrapper:
         self.in_class = in_class
 
     def __call__(self, *args, **kwargs):
+        # TODO：按需传参
         var_names = self.function.__code__.co_varnames
         # if var_names[0] == "self":
         #     # get function class instance
@@ -20,13 +30,13 @@ class Wrapper:
         kwargs.update(zip(var_names, args))
 
         for before_function in self._before:
-            updates = before_function(**kwargs)
+            updates = call_function(before_function, kwargs)
             kwargs.update(updates)
 
         result = self.function(**kwargs)
 
         for after_function in self._after:
-            result = after_function(result, **kwargs)
+            result = call_function(after_function, kwargs, result=result)
 
         return result
 
@@ -49,6 +59,7 @@ def Plugin(function=None):
     else:
         wrapper = Wrapper(function)
 
+    @wraps(function)
     def inner(*args, **kwargs):
         return wrapper(*args, **kwargs)
 
