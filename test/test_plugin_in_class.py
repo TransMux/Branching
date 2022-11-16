@@ -38,8 +38,8 @@ class TestPluginInClass(unittest.TestCase):
             return number
 
         @target.after
-        def after(number: int):
-            return number + 1
+        def after(result, number: int):
+            return result + 1
 
         self.assertEqual(target(1), 2)
 

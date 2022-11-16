@@ -2,13 +2,22 @@ from functools import partial
 
 
 class Wrapper:
-    def __init__(self, function):
+    def __init__(self, function, in_class=False):
         self.function = function
         self._before = []
         self._after = []
+        self.in_class = in_class
 
     def __call__(self, *args, **kwargs):
-        kwargs.update(zip(self.function.__code__.co_varnames, args))
+        var_names = self.function.__code__.co_varnames
+        # if var_names[0] == "self":
+        #     # get function class instance
+        #     if self.in_class:
+        #         args = self.cls, *args
+        #     else:
+        #         raise TypeError("Can't call a class method without a class")
+
+        kwargs.update(zip(var_names, args))
 
         for before_function in self._before:
             updates = before_function(**kwargs)
@@ -34,9 +43,19 @@ def Plugin(function=None):
     if function is None:
         return partial(Plugin, function)
 
-    wrapper = Wrapper(function)
+    # whether function is defined inside class
+    if function.__name__ != function.__qualname__:
+        wrapper = Wrapper(function, in_class=True)
+    else:
+        wrapper = Wrapper(function)
 
-    return wrapper
+    def inner(*args, **kwargs):
+        return wrapper(*args, **kwargs)
+
+    inner.before = wrapper.before
+    inner.after = wrapper.after
+
+    return inner
 
 
 if __name__ == '__main__':
