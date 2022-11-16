@@ -39,14 +39,22 @@ class Wrapper:
         elif function in self._after:
             self._after.remove(function)
 
-    def before(self, function):
+    def before(self, function=None, *, order=0):
+        if function is None:
+            return partial(self.before, order=order)
+        function.order = order
         self._before.append(function)
+        self._before = sorted(self._before, key=lambda x: x.order)
         function.remove = partial(self.remove_hook, function)
         function.mount = partial(self.before, function)
         return function
 
-    def after(self, function):
+    def after(self, function=None, *, order=0):
+        if function is None:
+            return partial(self.after, order=order)
+        function.order = order
         self._after.append(function)
+        self._after = sorted(self._after, key=lambda x: x.order)
         function.remove = partial(self.remove_hook, function)
         function.mount = partial(self.after, function)
         return function
