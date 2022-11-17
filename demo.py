@@ -1,22 +1,17 @@
+import requests
+
 from Branching import Plugin
 
 
 @Plugin
-def target(number: int):
-    return number
+def get_data(url):
+    return requests.get(url)
 
 
-@target.before
-def before(number: int):
-    return {"number": number + 1}
+@get_data.before
+def hook(url: str):
+    print("Requesting", url)
 
 
-assert target(1) == 2
-
-before.remove()
-
-assert target(1) == 1
-
-before.mount()
-
-assert target(1) == 2
+if __name__ == '__main__':
+    print(get_data("https://www.baidu.com"))
