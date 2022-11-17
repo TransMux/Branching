@@ -27,7 +27,7 @@ class Wrapper:
             if updates:
                 kwargs.update(updates)
 
-        result = self.function(**kwargs)
+        result = call_function(self.function, kwargs)
 
         for after_function in self._after:
             result = call_function(after_function, kwargs, result=result)
