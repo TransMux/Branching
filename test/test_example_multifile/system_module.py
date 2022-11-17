@@ -1,12 +1,14 @@
-import requests
-
 from Branching import Plugin
 from requests.models import Response
 
 
+class FakeResponse:
+    text = "<!DOCTYPE html>"
+
+
 @Plugin
 def get_data(url):
-    return requests.get(url)
+    return FakeResponse()
 
 
 @get_data.before

@@ -1,4 +1,3 @@
-# from target import get_data, textify
 import system_module
 
 

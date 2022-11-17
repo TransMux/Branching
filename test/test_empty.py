@@ -1,6 +1,6 @@
 import unittest
 
-from target import foo, Foo
+from target import foo
 
 
 class TestEmpty(unittest.TestCase):
