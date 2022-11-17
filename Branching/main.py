@@ -24,7 +24,8 @@ class Wrapper:
 
         for before_function in self._before:
             updates = call_function(before_function, kwargs)
-            kwargs.update(updates)
+            if updates:
+                kwargs.update(updates)
 
         result = self.function(**kwargs)
 
