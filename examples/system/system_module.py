@@ -1,6 +1,7 @@
 import requests
 
 from Branching import Plugin
+from requests.models import Response
 
 
 @Plugin
@@ -13,5 +14,7 @@ def hook(url: str):
     print("Requesting", url)
 
 
-if __name__ == '__main__':
-    print(get_data("https://www.baidu.com"))
+@get_data.after(order=10)
+def textify(url, _result: Response):
+    print(type(_result), url)
+    return _result.text
