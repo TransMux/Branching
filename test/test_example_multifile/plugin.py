@@ -10,8 +10,3 @@ def load():
         return _result[:5]
 
     return strip
-
-
-if __name__ == '__main__':
-    strip = load()
-    print(strip("123456"))

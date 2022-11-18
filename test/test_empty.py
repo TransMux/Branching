@@ -20,7 +20,3 @@ class TestEmpty(unittest.TestCase):
         self.assertEqual(foo(1), 1)
 
         before.remove()
-
-
-if __name__ == '__main__':
-    unittest.main()

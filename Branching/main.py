@@ -82,9 +82,6 @@ class Wrapper:
 
 
 def Plugin(function=None):
-    if function is None:
-        return partial(Plugin, function)
-
     # whether function is defined inside class
     if function.__name__ != function.__qualname__:
         wrapper = Wrapper(function, in_class=True)

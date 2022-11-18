@@ -18,7 +18,6 @@ class TestEmpty(unittest.TestCase):
         @foo.after
         def after(_result, not_existed: int):
             self.assertEqual(not_existed, 1)
+            return _result
 
-
-if __name__ == '__main__':
-    unittest.main()
+        self.assertEqual(foo(1), 1)

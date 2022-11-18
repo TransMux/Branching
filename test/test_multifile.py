@@ -16,7 +16,3 @@ class TestMultiFile(unittest.TestCase):
         hooked_before.remove()
 
         self.assertEqual(hooked(1), 2)
-
-
-if __name__ == '__main__':
-    unittest.main()

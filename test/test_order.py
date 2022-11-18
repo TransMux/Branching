@@ -33,7 +33,3 @@ class TestHookOrder(unittest.TestCase):
             return {"number": number * 2}
 
         self.assertEqual(Foo(1), 3)
-
-
-if __name__ == '__main__':
-    unittest.main()

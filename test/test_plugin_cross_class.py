@@ -45,7 +45,3 @@ class TestPluginCrossClass(unittest.TestCase):
         self.assertEqual(self.foo.bar(1), 3)
         before.remove()
         after.remove()
-
-
-if __name__ == '__main__':
-    unittest.main()

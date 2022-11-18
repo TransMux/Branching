@@ -57,7 +57,3 @@ class TestPluginInClass(unittest.TestCase):
             return _result + 1
 
         self.assertEqual(target(1), 3)
-
-
-if __name__ == '__main__':
-    unittest.main()

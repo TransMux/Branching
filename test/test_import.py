@@ -38,7 +38,3 @@ class TestImport(unittest.TestCase):
         self.assertEqual(foo_.foo(1), 2)
 
         before.remove()
-
-
-if __name__ == '__main__':
-    unittest.main()

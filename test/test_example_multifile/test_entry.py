@@ -9,7 +9,3 @@ class TestEmpty(unittest.TestCase):
         plugin.load()
         On()
         self.assertEqual(get_data("https://www.baidu.com"), "<!DOC")
-
-
-if __name__ == '__main__':
-    unittest.main()

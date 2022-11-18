@@ -30,7 +30,3 @@ class TestToggle(unittest.TestCase):
         Toggle()
 
         self.assertEqual(target(1), 1)
-
-
-if __name__ == '__main__':
-    unittest.main()
