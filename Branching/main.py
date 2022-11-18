@@ -1,6 +1,23 @@
 from functools import partial, wraps
 from typing import Callable
 
+_ON = True
+
+
+def Toggle():
+    global _ON
+    _ON = not _ON
+
+
+def Off():
+    global _ON
+    _ON = False
+
+
+def On():
+    global _ON
+    _ON = True
+
 
 def call_function(target: Callable, arguments: dict, result=None):
     # only pass the needed arguments to the function
@@ -22,17 +39,20 @@ class Wrapper:
 
         kwargs.update(zip(var_names, args))
 
-        for before_function in self._before:
-            updates = call_function(before_function, kwargs)
-            if updates:
-                kwargs.update(updates)
+        if _ON:
+            for before_function in self._before:
+                updates = call_function(before_function, kwargs)
+                if updates:
+                    kwargs.update(updates)
 
-        result = call_function(self.function, kwargs)
+            result = call_function(self.function, kwargs)
 
-        for after_function in self._after:
-            result = call_function(after_function, kwargs, result=result)
+            for after_function in self._after:
+                result = call_function(after_function, kwargs, result=result)
 
-        return result
+            return result
+        else:
+            return call_function(self.function, kwargs)
 
     def remove_hook(self, function):
         if function in self._before:

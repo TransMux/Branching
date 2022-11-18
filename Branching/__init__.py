@@ -1,3 +1,3 @@
-from .main import Plugin
+from .main import Plugin, Off, On, Toggle
 
-__all__ = ["Plugin"]
+__all__ = ["Plugin", "Off", "On", "Toggle"]
