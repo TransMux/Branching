@@ -1,24 +1,28 @@
-import numpy as np
-from numpy import ndarray
-
 from Branching import Plugin
 
 
-@Plugin
-def get_data(seed: int) -> ndarray:
-    np.random.seed(seed)
-    return np.random.randn(5, 5)
+class Demo:
+    def __init__(self, version):
+        self.version = version
+
+    @Plugin
+    def render(self):
+        return f"<{self.version}>"
 
 
-@get_data.before
-def fix_the_seed():
-    return {"seed": 42, "source": "user"}
+class Hook:
+
+    @staticmethod
+    @Demo.render.after
+    def render_v2(_result, self: Demo):
+        if self.version == "v2":
+            return _result + "v2"
+        else:
+            return _result
 
 
-@get_data.after
-def print_the_source(_result, source: str):
-    return f"{_result} from Source: {source}"
-
-
-if __name__ == '__main__':
-    print(get_data(10001))
+if __name__ == "__main__":
+    demo = Demo("v1")
+    print(demo.render())
+    demo.version = "v2"
+    print(demo.render())

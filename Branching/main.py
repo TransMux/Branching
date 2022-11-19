@@ -20,11 +20,15 @@ def On():
 
 
 def call_function(target: Callable, arguments: dict, result=None):
-    # only pass the needed arguments to the function
-    arguments = {key: value for key, value in arguments.items() if key in target.__code__.co_varnames}
-    if result is not None and "_result" in target.__code__.co_varnames:
+    # First Try passing all arguments
+    if result is not None:
         arguments["_result"] = result
-    return target(**arguments)
+    try:
+        return target(**arguments)
+    except TypeError:
+        # Then Try passing only the arguments that are defined in the function
+        arguments = {k: v for k, v in arguments.items() if k in target.__code__.co_varnames}
+        return target(**arguments)
 
 
 class Wrapper:
