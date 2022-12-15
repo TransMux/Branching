@@ -1,6 +1,7 @@
 import unittest
 
 from Branching import Plugin
+from Branching.main import print_workflow
 
 
 class TestHookOrder(unittest.TestCase):
@@ -18,6 +19,7 @@ class TestHookOrder(unittest.TestCase):
             return {"number": number * 2}
 
         self.assertEqual(Foo(1), 4)
+        print_workflow(Foo)
 
     def test_order_reverse(self):
         @Plugin
@@ -33,3 +35,4 @@ class TestHookOrder(unittest.TestCase):
             return {"number": number * 2}
 
         self.assertEqual(Foo(1), 3)
+        print_workflow(Foo)

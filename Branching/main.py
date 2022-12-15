@@ -96,7 +96,21 @@ def Plugin(function=None):
     def inner(*args, **kwargs):
         return wrapper(*args, **kwargs)
 
+    inner.instance = wrapper
     inner.before = wrapper.before
     inner.after = wrapper.after
 
     return inner
+
+
+# Get Plugin Workflow
+def workflow(function) -> list:
+    try:
+        hooks = function.instance._before + [function] + function.instance._after
+        return hooks
+    except Exception:
+        return [function]
+
+
+def print_workflow(function):
+    print([f.__name__ for f in workflow(function)])
