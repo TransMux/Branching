@@ -1,5 +1,5 @@
 from functools import partial, wraps
-from typing import Callable
+from typing import Callable, Tuple
 
 _ON = True
 
@@ -37,22 +37,26 @@ class Wrapper:
         self._before = []
         self._after = []
         self.in_class = in_class
+        self.toggle = True
+        self.disabled = []
 
     def __call__(self, *args, **kwargs):
         var_names = self.function.__code__.co_varnames
 
         kwargs.update(zip(var_names, args))
 
-        if _ON:
+        if _ON and self.toggle:
             for before_function in self._before:
-                updates = call_function(before_function, kwargs)
-                if updates:
-                    kwargs.update(updates)
+                if id(before_function) not in self.disabled:
+                    updates = call_function(before_function, kwargs)
+                    if updates:
+                        kwargs.update(updates)
 
             result = call_function(self.function, kwargs)
 
             for after_function in self._after:
-                result = call_function(after_function, kwargs, result=result)
+                if id(after_function) not in self.disabled:
+                    result = call_function(after_function, kwargs, result=result)
 
             return result
         else:
@@ -84,6 +88,28 @@ class Wrapper:
         function.mount = partial(self.after, function)
         return function
 
+    def off(self):
+        self.toggle = False
+
+    def on(self):
+        self.toggle = True
+
+    def disable(self, function: Tuple[Callable, int]):
+        if callable(function):
+            self.disabled.append(id(function))
+        elif isinstance(function, int):
+            self.disabled.append(function)
+        else:
+            raise TypeError("Function must be callable or id")
+
+    def enable(self, function):
+        if callable(function):
+            self.disabled.remove(id(function))
+        elif isinstance(function, int):
+            self.disabled.remove(function)
+        else:
+            raise TypeError("Function must be callable or id")
+
 
 def Plugin(function=None):
     # whether function is defined inside class
@@ -99,6 +125,10 @@ def Plugin(function=None):
     inner.instance = wrapper
     inner.before = wrapper.before
     inner.after = wrapper.after
+    inner.off = wrapper.off
+    inner.on = wrapper.on
+    inner.disable = wrapper.disable
+    inner.enable = wrapper.enable
 
     return inner
 
@@ -106,8 +136,11 @@ def Plugin(function=None):
 # Get Plugin Workflow
 def workflow(function) -> list:
     try:
+        if not function.instance.toggle:
+            return [function]
+
         hooks = function.instance._before + [function] + function.instance._after
-        return hooks
+        return [hook for hook in hooks if id(hook) not in function.instance.disabled]
     except Exception:
         return [function]
 
